@@ -28,3 +28,9 @@ python -m src.train_dqn --data PATH_TO_CSV --timesteps 10000
 Model weights will be saved to `dqn_trading_model.zip` by default.
 
 All hyperparameters in `train_dqn.py` can be adjusted to tune training.
+
+4. Evaluate a trained model on a test dataset:
+
+```bash
+python -m src.test_dqn --data PATH_TO_TEST_CSV --model-path dqn_trading_model.zip
+```
