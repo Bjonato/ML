@@ -1,1 +1,29 @@
-# ML
+# Reinforcement Learning Trading Example
+
+This repository contains a minimal example for setting up a trading environment and training a Deep Q-Network (DQN) agent.
+
+## Structure
+
+- `src/trading_env.py` – Custom OpenAI Gym environment for trading.
+- `src/train_dqn.py` – Script to train a DQN agent using Stable Baselines3.
+- `requirements.txt` – Dependencies.
+
+## Usage
+
+1. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+2. Prepare a CSV file with columns `close` and `volume` representing historical market data.
+
+3. Train a DQN agent:
+
+```bash
+python -m src.train_dqn --data PATH_TO_CSV --timesteps 10000
+```
+
+Model weights will be saved to `dqn_trading_model.zip` by default.
+
+All hyperparameters in `train_dqn.py` can be adjusted to tune training.
