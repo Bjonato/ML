@@ -16,7 +16,8 @@ This repository contains a minimal example for setting up a trading environment 
 pip install -r requirements.txt
 ```
 
-2. Prepare a CSV file with columns `close` and `volume` representing historical market data.
+2. Prepare a CSV file with the columns `Open`, `High`, `Low`, `Close` (or `Close/Last`) and `Volume`.
+   The training script will normalize these features and ignore the `Date` column if present.
 
 3. Train a DQN agent:
 

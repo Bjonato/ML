@@ -6,7 +6,10 @@ import pandas as pd
 class TradingEnv(gym.Env):
     """Custom Trading Environment for reinforcement learning.
 
-    The environment expects a pandas DataFrame with at least 'close' and 'volume' columns.
+    The environment expects a pandas DataFrame with the columns
+    ``open``, ``high``, ``low``, ``close`` and ``volume``. Values are
+    normalized by the first row so the agent sees inputs roughly in the
+    ``0-1`` range.
     """
 
     metadata = {"render.modes": ["human"]}
@@ -16,17 +19,24 @@ class TradingEnv(gym.Env):
         self.data = data.reset_index(drop=True)
         self.initial_balance = initial_balance
         self.action_space = spaces.Discrete(3)  # 0=Hold, 1=Buy, 2=Sell
-        # Observation: close price and volume, normalized
-        self.observation_space = spaces.Box(low=0.0, high=1.0, shape=(2,), dtype=np.float32)
+        # Observation: open, high, low, close, volume (normalized)
+        self.observation_space = spaces.Box(low=0.0, high=1.0, shape=(5,), dtype=np.float32)
         self.reset()
 
     def _get_observation(self) -> np.ndarray:
-        price = self.data.loc[self.current_step, "close"]
-        volume = self.data.loc[self.current_step, "volume"]
-        # Simple normalization by dividing by initial value
-        price_norm = price / self.data.loc[0, "close"]
-        volume_norm = volume / (self.data.loc[0, "volume"] + 1e-8)
-        return np.array([price_norm, volume_norm], dtype=np.float32)
+        row = self.data.loc[self.current_step]
+
+        # Simple normalization by dividing by initial value of each feature
+        open_norm = row["open"] / self.data.loc[0, "open"]
+        high_norm = row["high"] / self.data.loc[0, "high"]
+        low_norm = row["low"] / self.data.loc[0, "low"]
+        close_norm = row["close"] / self.data.loc[0, "close"]
+        volume_norm = row["volume"] / (self.data.loc[0, "volume"] + 1e-8)
+
+        return np.array(
+            [open_norm, high_norm, low_norm, close_norm, volume_norm],
+            dtype=np.float32,
+        )
 
     def reset(self):
         self.balance = self.initial_balance
